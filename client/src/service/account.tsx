@@ -1,4 +1,3 @@
-import * as SecretJS from "secretjs";
 import { Account } from "secretjs";
 import * as React from "react";
 

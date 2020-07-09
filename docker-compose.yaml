@@ -9,7 +9,7 @@ services:
       - net
     hostname: secretdev
     volumes:
-        - ".:/root/code"
+        - "./contract:/root/code"
 
   nginx:
     image: nginx:latest

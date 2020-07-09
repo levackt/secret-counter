@@ -1,4 +1,3 @@
-import { Encoding } from "@iov/encoding";
 import MuiTypography from "@material-ui/core/Typography";
 import * as React from "react";
 
@@ -16,10 +15,6 @@ export interface CounterProps {
 export interface State {
   readonly loading: boolean;
   readonly count?: string;
-}
-
-function parseQueryJson<T>(raw: Uint8Array): T {
-  return JSON.parse(Encoding.fromUtf8(raw));
 }
 
 interface QueryResponse {
@@ -41,8 +36,7 @@ export function Counter(props: CounterProps): JSX.Element {
     getClient()
       .queryContractSmart(contractAddress, { get_count: { } })
       .then(res => {
-        const o = parseQueryJson<QueryResponse>(res);
-        setState({ count: o.count, loading: false });
+        setState({ count: res.count, loading: false });
       })
       .catch(err => {
         setState({ loading: false });
@@ -65,8 +59,7 @@ export function Counter(props: CounterProps): JSX.Element {
       
       await getClient().queryContractSmart(contractAddress, { get_count: { } })
       .then(res => {
-        const o = parseQueryJson<QueryResponse>(res);
-        setState({ count: o.count, loading: false });
+        setState({ count: res.count, loading: false });
       })
       .catch(err => {
         setState({ loading: false });

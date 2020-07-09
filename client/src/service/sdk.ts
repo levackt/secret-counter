@@ -66,9 +66,7 @@ const buildFeeTable = (feeToken: string, gasPrice: number): FeeTable => {
 // this creates a new connection to a server at URL,
 // using a signing keyring generated from the given mnemonic
 export async function connect(httpUrl: string, { address, signer }: Wallet): Promise<ConnectResult> {
-  const client = new SigningCosmWasmClient(httpUrl, address, signer);
-  // todo custom fees
-    // const client = new SigningCosmWasmClient(httpUrl, address, signer, 
-    // buildFeeTable("uscrt", 1));
+  const client = new SigningCosmWasmClient(httpUrl, address, signer, 
+    undefined, buildFeeTable("uscrt", 1));
   return { address, client };
 }
