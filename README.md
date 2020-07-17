@@ -21,10 +21,11 @@ docker-compose exec secretdev \
 ### Start the faucet, to fund burner wallets
 ```bash
 git clone https://github.com/enigmampc/SecretNetwork/
-cd SecretNetwork/cosmwasm-js
 # check out develop branch for now
 git checkout develop
+cd SecretNetwork/cosmwasm-js
 # build the JS components
+yarn install
 yarn build
 # start the faucet
 cd packages/faucet
