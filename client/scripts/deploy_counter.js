@@ -31,10 +31,10 @@ const customFees = {
 }
 async function main() {
   const signingPen = await Secp256k1Pen.fromMnemonic(faucet.mnemonic);
-    const myWalletAddress = pubkeyToAddress(
-      encodeSecp256k1Pubkey(signingPen.pubkey),
-      "secret"
-    );
+  const myWalletAddress = pubkeyToAddress(
+    encodeSecp256k1Pubkey(signingPen.pubkey),
+    "secret"
+  );
   const txEncryptionSeed = EnigmaUtils.GenerateNewSeed();
   const client = new SigningCosmWasmClient(
     httpUrl,
