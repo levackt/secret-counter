@@ -32,7 +32,7 @@ cd packages/faucet
 yarn dev-start
 ```
 
-### Fund the faucet holder (if this is different from your test account)
+### Fund the faucet holder (Holder address is output on startup)
 ```bash
 docker-compose exec secretdev \
   secretcli tx send \
@@ -41,9 +41,19 @@ docker-compose exec secretdev \
   --keyring-backend test --yes
 ```
 
+### Fund the deployer
+```bash
+docker-compose exec secretdev \
+  secretcli tx send \
+  a secret1cdycaskx8g9gh9zpa5g8ah04ql0lzkrsxmcnfq \
+  100000000000uscrt --from a \
+  --keyring-backend test --yes
+```
+
 ### Deploy the contract
 ```bash
 cd client
+yarn
 node scripts/deploy_counter.js
 ```
 
