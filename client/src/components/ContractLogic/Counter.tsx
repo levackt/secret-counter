@@ -17,10 +17,6 @@ export interface State {
   readonly count?: string;
 }
 
-interface QueryResponse {
-  readonly count: string;
-}
-
 export function Counter(props: CounterProps): JSX.Element {
   const classes = useBaseStyles();
   const { contractAddress } = props;
@@ -30,44 +26,17 @@ export function Counter(props: CounterProps): JSX.Element {
 
   const [state, setState] = React.useState<State>({ loading: false });
 
-  React.useEffect(() => {
-    
-    setState({ loading: true });
-    getClient()
-      .queryContractSmart(contractAddress, { get_count: { } })
-      .then(res => {
-        setState({ count: res.count, loading: false });
-      })
-      .catch(err => {
-        setState({ loading: false });
-        if (!err.toString().includes("Failed to get counter")) {
-          setError(err);
-        }
-      });
-  }, [getClient, setError, contractAddress]);
-
   const increment = async (): Promise<boolean> => {
     
     setState({ loading: true });
     try {
-      await getClient().execute(
-        props.contractAddress,
+      const result = await getClient().execute(
+        contractAddress,
         { increment: { } },
       );
+      debugger
       setState({ loading: false });
       refreshAccount();
-      
-      await getClient().queryContractSmart(contractAddress, { get_count: { } })
-      .then(res => {
-        setState({ count: res.count, loading: false });
-      })
-      .catch(err => {
-        setState({ loading: false });
-        if (!err.toString().includes("Failed to get counter")) {
-          setError(err);
-        }
-      });
-
     } catch (err) {
       setState({ loading: false });
       setError(err);
@@ -80,7 +49,7 @@ export function Counter(props: CounterProps): JSX.Element {
     setState({ loading: true });
     try {
       await getClient().execute(
-        props.contractAddress,
+        contractAddress,
         { reset: { count: parseInt(newCount) } }
       );
       setState({ count: newCount, loading: false });
@@ -99,7 +68,7 @@ export function Counter(props: CounterProps): JSX.Element {
     <div className={classes.card}>
       <MuiTypography variant="h6">
         
-        Counter: {state.loading ? <LinearProgress /> : state.count}
+        Counter: {state.loading ? <LinearProgress /> : state.count || 'secret' }
       </MuiTypography>
       <Button color="primary" type="submit" onClick={increment} disabled={state.loading}>
         Increment

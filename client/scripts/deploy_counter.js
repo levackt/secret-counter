@@ -51,6 +51,10 @@ async function main() {
   const initMsg = {"count": 0}
   const { contractAddress } = await client.instantiate(uploadReceipt.codeId, initMsg, memo);
   console.info(`Contract instantiated at ${contractAddress}`);
+
+  const incrementMsg = {"increment": {}}
+  let result = await client.execute(contractAddress, incrementMsg);
+  console.log(`Increment result: ${JSON.stringify(result)}`);
 }
 
 main().then(
