@@ -14,7 +14,7 @@ export interface CounterProps {
 
 export interface State {
   readonly loading: boolean;
-  readonly count?: string;
+  count?: string;
 }
 
 export function Counter(props: CounterProps): JSX.Element {
@@ -34,8 +34,10 @@ export function Counter(props: CounterProps): JSX.Element {
         contractAddress,
         { increment: { } },
       );
-      debugger
-      setState({ loading: false });
+      const attributes = result.logs[0].events[1].attributes;
+      const attribute = attributes.find(x => x.key === "count");
+      const count = attribute?.value || state.count;
+      setState({ loading: false, count: count });
       refreshAccount();
     } catch (err) {
       setState({ loading: false });
@@ -68,7 +70,7 @@ export function Counter(props: CounterProps): JSX.Element {
     <div className={classes.card}>
       <MuiTypography variant="h6">
         
-        Counter: {state.loading ? <LinearProgress /> : state.count || 'secret' }
+        Counter: {state.loading ? <LinearProgress /> : state.count || 'Secret, until you increment' }
       </MuiTypography>
       <Button color="primary" type="submit" onClick={increment} disabled={state.loading}>
         Increment
