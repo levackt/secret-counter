@@ -10,7 +10,7 @@ pub struct InitMsg {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum HandleMsg {
-    Increment { },
+    Increment {},
     Reset { count: i32 },
 }
 
@@ -29,9 +29,7 @@ impl Into<HandleResponse> for IncrementResponse {
     fn into(self) -> HandleResponse<Never> {
         HandleResponse {
             messages: vec![],
-            log: vec![
-                log("count", self.count),
-            ],
+            log: vec![log("count", self.count)],
             data: None,
         }
     }
@@ -40,7 +38,7 @@ impl Into<HandleResponse> for IncrementResponse {
 impl Returnable for IncrementResponse {}
 
 trait Returnable
-    where
-        Self: Into<HandleResponse>,
+where
+    Self: Into<HandleResponse>,
 {
 }
