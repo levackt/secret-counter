@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "secretjs": "0.9.10",
+    "secretjs": "0.9.13",
     "@date-io/core": "^2.4.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.27",
     "@fortawesome/free-regular-svg-icons": "^5.12.1",

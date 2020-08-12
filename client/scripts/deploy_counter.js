@@ -13,19 +13,19 @@ const faucet = {
 
 const customFees = {
   upload: {
-    amount: [{ amount: "25000", denom: "uscrt" }],
+    amount: [{ amount: "2000000", denom: "uscrt" }],
     gas: "2000000",
   },
   init: {
-    amount: [{ amount: "0", denom: "uscrt" }],
+    amount: [{ amount: "500000", denom: "uscrt" }],
     gas: "500000",
   },
   exec: {
-    amount: [{ amount: "0", denom: "uscrt" }],
+    amount: [{ amount: "500000", denom: "uscrt" }],
     gas: "500000",
   },
   send: {
-    amount: [{ amount: "2000", denom: "uscrt" }],
+    amount: [{ amount: "80000", denom: "uscrt" }],
     gas: "80000",
   },
 }
@@ -44,7 +44,7 @@ async function main() {
   );
 
   const wasm = fs.readFileSync(__dirname + "/../../contracts/contract.wasm");
-  const uploadReceipt = await client.upload(wasm, {})
+  const uploadReceipt = await client.upload(wasm, { source: "https://github.com/levackt/secret-counter", builder: "cosmwasm/rust-optimizer:0.8.0"})
   console.info(`Upload succeeded. Receipt: ${JSON.stringify(uploadReceipt)}`);
 
   const memo = `Counter`;
