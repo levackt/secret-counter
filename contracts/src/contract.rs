@@ -1,10 +1,10 @@
 use cosmwasm_std::{
-    to_binary, Api, Binary, Env, Extern, HandleResponse, InitResponse, Querier, StdError,
+    generic_err, Api, Binary, Env, Extern, HandleResponse, InitResponse, Querier, StdError,
     StdResult, Storage,
 };
 
-use crate::msg::{CountResponse, HandleMsg, InitMsg, QueryMsg};
-use crate::state::{config, config_read, State};
+use crate::msg::{HandleMsg, IncrementResponse, InitMsg, QueryMsg};
+use crate::state::{config, State};
 
 pub fn init<S: Storage, A: Api, Q: Querier>(
     deps: &mut Extern<S, A, Q>,
@@ -26,49 +26,43 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
     env: Env,
     msg: HandleMsg,
 ) -> StdResult<HandleResponse> {
-    match msg {
-        HandleMsg::Increment {} => try_increment(deps, env),
-        HandleMsg::Reset { count } => try_reset(deps, env, count),
-    }
+    let result: HandleResponse = match msg {
+        HandleMsg::Increment {} => {
+            let count = try_increment(deps, env);
+            IncrementResponse { count }.into()
+        }
+        HandleMsg::Reset { count } => {
+            try_reset(deps, env, count);
+            HandleResponse::default()
+        }
+    };
+    Ok(result)
 }
 
-pub fn try_increment<S: Storage, A: Api, Q: Querier>(
-    deps: &mut Extern<S, A, Q>,
-    _env: Env,
-) -> StdResult<HandleResponse> {
+pub fn try_increment<S: Storage, A: Api, Q: Querier>(deps: &mut Extern<S, A, Q>, _env: Env) -> i32 {
+    let mut count: i32 = 0;
     config(&mut deps.storage).update(|mut state| {
         state.count += 1;
+        count = state.count;
         Ok(state)
-    })?;
+    });
 
-    Ok(HandleResponse::default())
+    return count;
 }
 
-pub fn try_reset<S: Storage, A: Api, Q: Querier>(
-    deps: &mut Extern<S, A, Q>,
-    env: Env,
-    count: i32,
-) -> StdResult<HandleResponse> {
+pub fn try_reset<S: Storage, A: Api, Q: Querier>(deps: &mut Extern<S, A, Q>, env: Env, count: i32) {
     config(&mut deps.storage).update(|mut state| {
         if env.message.sender != state.owner {
             return Err(StdError::Unauthorized { backtrace: None });
         }
         state.count = count;
         Ok(state)
-    })?;
-    Ok(HandleResponse::default())
+    });
 }
 
 pub fn query<S: Storage, A: Api, Q: Querier>(
-    deps: &Extern<S, A, Q>,
-    msg: QueryMsg,
+    _deps: &Extern<S, A, Q>,
+    _msg: QueryMsg,
 ) -> StdResult<Binary> {
-    match msg {
-        QueryMsg::GetCount {} => to_binary(&query_count(deps)?),
-    }
-}
-
-fn query_count<S: Storage, A: Api, Q: Querier>(deps: &Extern<S, A, Q>) -> StdResult<CountResponse> {
-    let state = config_read(&deps.storage).load()?;
-    Ok(CountResponse { count: state.count })
+    Err(generic_err("Queries are not supported"))
 }
